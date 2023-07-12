@@ -1,0 +1,32 @@
+const express = require("express");
+
+const app = express();
+
+//It is custom error handling try to learn how it works lets go to the Advance after you understand it.
+
+
+class ErrorHandler extends Error{
+    constructor(message,statusCode){
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
+app.get("/",(req,res,next)=>{
+    return next(new ErrorHandler("Bas Ja Tu",404));
+},(req,res,next)=>{
+    console.log("B");
+})
+
+app.use((err,req,res,next)=>{
+    console.log(err);
+    err.statusCode = err.statusCode || 500;
+    err.message = err.message || "internal Server error";
+    res.status(err.statusCode).json({
+        message:err.message
+    })
+})
+
+app.listen(4000,()=>{
+    console.log("server is running on port 4000");
+})
